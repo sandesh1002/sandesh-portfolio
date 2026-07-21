@@ -1,14 +1,36 @@
 # Deploy Sandesh Portfolio — TODO
 
+## 🔧 Phase 0: Fix Backend Build Error (Exited with status 1 on Render)
+
+**Root cause:** The backend crashed because `MONGODB_URI` was missing or the MongoDB connection wasn't awaited, causing an unhandled promise rejection that exits Node.js with code 1.
+
+### ✅ Changes made:
+
+- [x] **`backend/src/index.js`** — Added startup validation (exits early if `MONGODB_URI` is missing), `async` server start with proper `try/catch`, and graceful shutdown (SIGTERM/SIGINT handlers)
+- [x] **`backend/package.json`** — Added `"engines":{"node":">=18.0.0"}` and `prestart` script to validate `MONGODB_URI` before startup
+- [x] **`backend/.env.example`** — Created to document all required environment variables
+
+### ⚠️ After pushing, verify these env vars are set on Render:
+
+| Variable | Required? | Description |
+|----------|-----------|-------------|
+| `MONGODB_URI` | ✅ **Required** | MongoDB Atlas connection string |
+| `GMAIL_USER` | ❌ Optional | Gmail address for sending emails |
+| `GMAIL_APP_PASSWORD` | ❌ Optional | Gmail App Password |
+| `OWNER_EMAIL` | ❌ Optional | Email to receive contact notifications |
+| `FRONTEND_URL` | ❌ Optional | Frontend domain for CORS |
+
+---
+
 ## ✅ Phase 1: Push Code to GitHub
 
-- [ ] Create a GitHub repository (if not already done)
-- [ ] Remove `node_modules/` and `dist/` from tracking (already in `.gitignore`)
-- [ ] Add, commit, and push:
+- [ ] Go to GitHub → Create a new repository (e.g. `sandesh-portfolio`)
+- [ ] Run these commands in the project root:
   ```bash
   git add .
-  git commit -m "Initial commit"
-  git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+  git commit -m "Fix backend startup: validate env vars, await MongoDB, graceful shutdown"
+  git remote add origin https://github.com/YOUR_USERNAME/sandesh-portfolio.git
+  git branch -M main
   git push -u origin main
   ```
 
